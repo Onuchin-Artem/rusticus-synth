@@ -14,7 +14,11 @@ fn main()-> Result<(), anyhow::Error> {
     let mut sample_clock = 0f32;
     let mut next_value = move || {
         sample_clock = (sample_clock + 1.0) % sample_rate;
-        (sample_clock * 440.0 * 2.0 * std::f32::consts::PI / sample_rate).sin() * 0.01
+        if sample_clock < 10000.0 {
+            (sample_clock * (200.0 + sample_clock / 50.0) * 2.0 * std::f32::consts::PI / sample_rate).sin() * 0.01
+        } else {
+            0.0
+        }
     };
 
     let err_fn = |err| eprintln!("an error occurred on stream: {}", err);
@@ -34,7 +38,7 @@ fn main()-> Result<(), anyhow::Error> {
     )?;
     stream.play()?;
 
-    std::thread::sleep(std::time::Duration::from_millis(100));
+    std::thread::sleep(std::time::Duration::from_millis(10000));
     println!("suka");
     Ok(())
 }
